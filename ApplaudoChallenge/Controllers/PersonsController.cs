@@ -40,6 +40,8 @@ namespace ApplaudoChallenge.Controllers
         
         // POST: api/Persons
         [HttpPost]
+        [ProducesResponseType(202)]
+        [ProducesResponseType(400)]
         public IActionResult Post([FromBody]Person person)
         {
             if (!ModelState.IsValid)
@@ -53,15 +55,31 @@ namespace ApplaudoChallenge.Controllers
         
         // PUT: api/Persons/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        public IActionResult Put(int id, [FromBody]Person modify)
         {
-            
+            var person = _repo.FindById(id);
+            if (person == null)
+                return NotFound();
+            person.FirstName = modify.FirstName;
+            person.LastName = modify.LastName;
+            person.Disabled = modify.Disabled;
+            _repo.Update(person);
+            return Ok();
         }
         
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [ProducesResponseType(404)]
+        [ProducesResponseType(204)]
+        public IActionResult Delete(int id)
         {
+            var person = _repo.FindById(id);
+            if (person == null)
+                return NotFound();
+            _repo.Delete(person.Id);
+            return NoContent();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ApplaudoChallenge.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ApplaudoChallenge.Repositories
 {
@@ -58,12 +59,25 @@ namespace ApplaudoChallenge.Repositories
 
         public Person Update(Person person)
         {
-            throw new NotImplementedException();
+           var index= _persons.FindIndex(p => p.Id == person.Id);
+            if (index != -1)
+                _persons[index] = person;
+            else
+            {
+                //TODO: Make a custom error
+                throw new Exception("Item does not exists");
+            }
+            return person;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var index = _persons.FindIndex(p => p.Id == id);
+            if (index == -1)
+            {
+                throw new Exception("Item does not exists");
+            }
+            _persons.RemoveAt(index);
         }
     }
 }
