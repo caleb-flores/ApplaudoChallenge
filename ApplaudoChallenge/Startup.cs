@@ -1,4 +1,5 @@
-﻿using ApplaudoChallenge.Repositories;
+﻿using ApplaudoChallenge.ContractResolver;
+using ApplaudoChallenge.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,12 @@ namespace ApplaudoChallenge
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IPersonRepository, PersonRepository>();
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new PersonContractResolver();
+                    
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
