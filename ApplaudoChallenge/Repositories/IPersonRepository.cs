@@ -8,10 +8,10 @@ namespace ApplaudoChallenge.Repositories
 {
     public interface IPersonRepository
     {
-        IEnumerable<Person> All();
-        Person FindById(int id);
-        Person Add(Person person);
-        Person Update(Person person);
-        void Delete(int id);
+        Task<IEnumerable<Person>> AllAsync();
+        Task<Person> FindByIdAsync(int id);
+        Task AddAsync(Person person);
+        Task UpdateAsync(Person person);
+        Task DeleteAsync(Person person);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ApplaudoChallenge.Models;
 using ApplaudoChallenge.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -17,18 +18,18 @@ namespace ApplaudoChallenge.Controllers
         // GET: api/Persons
         [HttpGet]
         [ProducesResponseType(200,Type=typeof(IEnumerable<Person>))]
-        public IEnumerable<Person> Get()
+        public async Task<IEnumerable<Person>> Get()
         {
-            return _repo.All();
+            return await _repo.AllAsync();
         }
 
         // GET: api/Persons/5
         [HttpGet("{id}", Name = "Get")]
         [ProducesResponseType(200,Type = typeof(Person))]
         [ProducesResponseType(404)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var person = _repo.FindById(id);
+            var person = await _repo.FindByIdAsync(id);
             return (person == null)? (IActionResult) NotFound(): Ok(person);
         }
         
@@ -36,11 +37,11 @@ namespace ApplaudoChallenge.Controllers
         [HttpPost]
         [ProducesResponseType(202)]
         [ProducesResponseType(400)]
-        public IActionResult Post([FromBody]Person person)
+        public async Task<IActionResult> Post([FromBody]Person person)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            person = _repo.Add(person);
+            await _repo.AddAsync(person);
             return CreatedAtAction(nameof(Get),new
             {
                 id = person.Id
@@ -51,15 +52,15 @@ namespace ApplaudoChallenge.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public IActionResult Put(int id, [FromBody]Person modify)
+        public async Task<IActionResult> Put(int id, [FromBody]Person modify)
         {
-            var person = _repo.FindById(id);
+            var person = await _repo.FindByIdAsync(id);
             if (person == null)
                 return NotFound();
             person.FirstName = modify.FirstName;
             person.LastName = modify.LastName;
             person.Disabled = modify.Disabled;
-            _repo.Update(person);
+            await _repo.UpdateAsync(person);
             return Ok();
         }
         
@@ -67,12 +68,12 @@ namespace ApplaudoChallenge.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(404)]
         [ProducesResponseType(204)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var person = _repo.FindById(id);
+            var person = await _repo.FindByIdAsync(id);
             if (person == null)
                 return NotFound();
-            _repo.Delete(person.Id);
+            await _repo.DeleteAsync(person);
             return NoContent();
         }
     }

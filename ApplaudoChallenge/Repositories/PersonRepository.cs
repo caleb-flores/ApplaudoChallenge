@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApplaudoChallenge.Data;
 using ApplaudoChallenge.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplaudoChallenge.Repositories
 {
@@ -16,34 +15,32 @@ namespace ApplaudoChallenge.Repositories
             _context = context;
         }
 
-        public IEnumerable<Person> All()
+        public async Task<IEnumerable<Person>> AllAsync()
         {
-            return _context.Persons;
+            return await _context.Persons.ToListAsync();
         }
 
-        public Person FindById(int id)
+        public async Task<Person> FindByIdAsync(int id)
         {
-            return _context.Persons.FirstOrDefault(x => x.Id == id);
+            return await _context.Persons.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Person Add(Person person)
+        public async Task AddAsync(Person person)
         {
-             _context.Persons.Add(person);
-            _context.SaveChanges();
-            return person;
+            await _context.Persons.AddAsync(person);
+            await _context.SaveChangesAsync();
         }
 
-        public Person Update(Person person)
+        public async Task UpdateAsync(Person person)
         {
             _context.Persons.Update(person);
-            _context.SaveChanges();
-            return person;
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(Person person)
         {
-            var person = _context.Persons.FirstOrDefault(x => x.Id == id);
             _context.Persons.Remove(person);
+            await _context.SaveChangesAsync();
         }
     }
 }
