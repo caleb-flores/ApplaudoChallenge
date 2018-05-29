@@ -1,83 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using ApplaudoChallenge.Data;
 using ApplaudoChallenge.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ApplaudoChallenge.Repositories
 {
-    public class PersonRepository : IPersonRepository
+    public class PersonRepository :IPersonRepository
     {
-        private List<Person> _persons;
+        private readonly ApplicationDbContext _context;
 
-        public PersonRepository()
+        public PersonRepository(ApplicationDbContext context)
         {
-            _persons = new List<Person>()
-            {
-                new Person()
-                {
-                    Id = 1,
-                    FirstName = "first name 1",
-                    LastName = "last name 1",
-                    Disabled = false
-                },
-                new Person()
-                {
-                    Id = 2,
-                    FirstName = "first name 1",
-                    LastName = "last name 1",
-                    Disabled = false
-                },
-                new Person()
-                {
-                    Id = 3,
-                    FirstName = "first name 1",
-                    LastName = "last name 1",
-                    Disabled = false
-                }
-            };
+            _context = context;
         }
 
         public IEnumerable<Person> All()
         {
-            return _persons;
+            return _context.Persons;
         }
 
         public Person FindById(int id)
         {
-            return _persons.FirstOrDefault(p => p.Id == id);
+            return _context.Persons.FirstOrDefault(x => x.Id == id);
         }
 
         public Person Add(Person person)
         {
-            person.Id = _persons.Max(p => p.Id) + 1;
-            _persons.Add(person);
+             _context.Persons.Add(person);
+            _context.SaveChanges();
             return person;
         }
 
         public Person Update(Person person)
         {
-           var index= _persons.FindIndex(p => p.Id == person.Id);
-            if (index != -1)
-                _persons[index] = person;
-            else
-            {
-                //TODO: Make a custom error
-                throw new Exception("Item does not exists");
-            }
+            _context.Persons.Update(person);
+            _context.SaveChanges();
             return person;
         }
 
         public void Delete(int id)
         {
-            var index = _persons.FindIndex(p => p.Id == id);
-            if (index == -1)
-            {
-                throw new Exception("Item does not exists");
-            }
-            _persons.RemoveAt(index);
+            var person = _context.Persons.FirstOrDefault(x => x.Id == id);
+            _context.Persons.Remove(person);
         }
     }
 }

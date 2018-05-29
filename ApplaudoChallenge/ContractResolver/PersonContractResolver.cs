@@ -11,7 +11,7 @@ namespace ApplaudoChallenge.ContractResolver
 {
     public class PersonContractResolver : DefaultContractResolver
     {
-        public PersonContractResolver():base()
+        public PersonContractResolver()
         {
             NamingStrategy = new CamelCaseNamingStrategy();
         }

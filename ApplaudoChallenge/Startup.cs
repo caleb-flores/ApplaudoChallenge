@@ -1,7 +1,9 @@
 ﻿using ApplaudoChallenge.ContractResolver;
+using ApplaudoChallenge.Data;
 using ApplaudoChallenge.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +21,9 @@ namespace ApplaudoChallenge
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IPersonRepository, PersonRepository>();
+            services.AddDbContext<ApplicationDbContext>(options => { options.UseInMemoryDatabase("persons"); });
+
+            services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
