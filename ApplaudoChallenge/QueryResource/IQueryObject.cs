@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplaudoChallenge.QueryResource
 {
-    interface IQueryObject
+    public interface IQueryObject
     {
         int Page { get; set; }
         int PageSize { get; set; }

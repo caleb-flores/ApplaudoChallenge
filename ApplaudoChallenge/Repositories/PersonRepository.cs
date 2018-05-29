@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ApplaudoChallenge.Data;
+using ApplaudoChallenge.Extensions;
 using ApplaudoChallenge.Models;
 using ApplaudoChallenge.QueryResource;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ namespace ApplaudoChallenge.Repositories
             return new QueryResult<Person>()
             {
                 TotalItems = await query.CountAsync(),
-                Items = await query.ToListAsync()
+                Items = await query.Paginate(filter).ToListAsync()
             };
         }
 
