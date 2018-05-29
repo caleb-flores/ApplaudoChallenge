@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ApplaudoChallenge.Data;
 using ApplaudoChallenge.Models;
+using ApplaudoChallenge.QueryResource;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApplaudoChallenge.Repositories
@@ -15,9 +17,23 @@ namespace ApplaudoChallenge.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Person>> AllAsync()
+        public async Task<QueryResult<Person>> AllAsync(QueryPerson filter)
         {
-            return await _context.Persons.ToListAsync();
+            var query = _context.Persons.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter.First))
+            {
+                query = query.Where(p => p.FirstName.ToUpper().StartsWith(filter.First.ToUpper()));
+            }
+            if (!string.IsNullOrEmpty(filter.Last))
+            {
+                query = query.Where(p => p.LastName.ToUpper().StartsWith(filter.Last.ToUpper()));
+            }
+            return new QueryResult<Person>()
+            {
+                TotalItems = await query.CountAsync(),
+                Items = await query.ToListAsync()
+            };
         }
 
         public async Task<Person> FindByIdAsync(int id)

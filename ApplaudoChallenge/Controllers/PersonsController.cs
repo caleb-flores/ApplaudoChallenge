@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApplaudoChallenge.Models;
+using ApplaudoChallenge.QueryResource;
 using ApplaudoChallenge.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,9 @@ namespace ApplaudoChallenge.Controllers
         // GET: api/Persons
         [HttpGet]
         [ProducesResponseType(200,Type=typeof(IEnumerable<Person>))]
-        public async Task<IEnumerable<Person>> Get()
+        public async Task<QueryResult<Person>> Get(QueryPerson filter)
         {
-            return await _repo.AllAsync();
+            return await _repo.AllAsync(filter);
         }
 
         // GET: api/Persons/5
