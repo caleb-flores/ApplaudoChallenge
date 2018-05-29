@@ -11,6 +11,6 @@ namespace ApplaudoChallenge.QueryResource
         int Page { get; set; }
         int PageSize { get; set; }
         string SortBy { get; set; }
-        bool IsSortAscending { get; set; }
+        bool IsSortDescending { get; set; }
     }
 }
