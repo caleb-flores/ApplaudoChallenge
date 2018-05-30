@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApplaudoChallenge.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Persons")]
+    [Route("api/persons")]
     public class PersonsController : Controller
     {
         private readonly IPersonRepository _repo;
@@ -19,7 +19,7 @@ namespace ApplaudoChallenge.Controllers
         // GET: api/Persons
         [HttpGet]
         [ProducesResponseType(200,Type=typeof(IEnumerable<Person>))]
-        public async Task<QueryResult<Person>> Get(QueryPerson filter)
+        public async Task<QueryResult<Person>> Get([FromQuery]QueryPerson filter)
         {
             return await _repo.AllAsync(filter);
         }
@@ -42,6 +42,7 @@ namespace ApplaudoChallenge.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            person.Id = 0;
             await _repo.AddAsync(person);
             return CreatedAtAction(nameof(Get),new
             {
